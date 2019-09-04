@@ -1,0 +1,27 @@
+#cloud-config
+users:
+  - name: cisadm
+    ssh-authorized-keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDMkEvbSeFJrsCoRM3Ge/5SLf24QM4npF0H7FVLIuYdGu4Olj5iOA+yTSnGPoUqLtdJc+bdJT6kswTxENcbyjeHMzjWvq3cVsCWqbTvBUBe65pUBQ/JqFlMOlKKe5S+iXQOqm3/+xO5dECeQJ2xqdQgXAKPOmXfb3nvMyPOi2iutiWw7q7AhQeJrLvUyVXpgKGWGmKbpHiboeRxZJ1kiaYgTmfPry0obZ+ORJY3zfz1XZHrULWARDJDr0QX9Let6b/p6extpyz5wEKLv6OHSYkr7Z0UI1HMhdNwLyj4sVgoEt7bg8Mi4OmBEkmdoSSA3HBEW+IY/8mIueiEbnzEYpbP cisadm@SMANSIBLE001
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    groups: sudo
+    shell: /bin/bash
+hostname: @@{Hostname}@@
+write_files: 
+  - path: /etc/netplan/50-cloud-init.yaml
+    content: |
+      network:
+        version: 2
+        ethernets:
+            ens3:
+              dhcp4: no
+              addresses: 
+              - @@{IP_Address}@@/@@{Subnet_Mask}@@
+              gateway4: @@{Gateway}@@
+              nameservers:
+                search: []
+                addresses: 
+                - @@{DNS_Servers_1}@@
+                - @@{DNS_Servers_2}@@
+runcmd:
+  - /usr/sbin/netplan apply
